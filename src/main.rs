@@ -66,8 +66,8 @@ pub struct App {
     squares: Vec<ColoredRect>,
     player: ColoredRect,
     game_over: bool,
-    bg_image: Texture,
-    bg_position: f64,
+    bg_image: [Texture; 2],
+    bg_position: [f64; 2],
 }
 
 impl App {
@@ -79,7 +79,8 @@ impl App {
         let bg_position = self.bg_position;
 
         self.gl.draw(args.viewport(), |c, gl| {
-            image(bg_image, c.transform.trans(0.0, bg_position), gl);
+            image(&bg_image[0], c.transform.trans(0.0, bg_position[0]), gl);
+            image(&bg_image[1], c.transform.trans(0.0, bg_position[1]), gl);
         });
 
         let player = &self.player;
@@ -96,7 +97,13 @@ impl App {
 
     fn update(&mut self, args: &UpdateArgs) {
         // Move down
-        self.bg_position += 100.0 * args.dt;
+        for i in 0..2 {
+            self.bg_position[i] += 100.0 * args.dt;
+            if self.bg_position[i] > 720.0 {
+                self.bg_position[i] = -720.0;
+            }
+
+        }
 
         let mut number_of_pops = 0;
 
@@ -142,7 +149,8 @@ fn main() {
     let assets = find_folder::Search::ParentsThenKids(3, 3)
         .for_folder("res").unwrap();
     let image_path = assets.join("nebula.jpg");
-    let my_image = Texture::from_path(image_path).unwrap();
+    let my_image1 = Texture::from_path(&image_path).unwrap();
+    let my_image2 = Texture::from_path(&image_path).unwrap();
 
     // Create a new game and run it.
     let mut app = App {
@@ -162,9 +170,9 @@ fn main() {
 
         game_over: false,
 
-        bg_image: my_image,
+        bg_image: [my_image1, my_image2],
 
-        bg_position: 0.0,
+        bg_position: [-720.0, 0.0],
     };
 
     let mut cursor = [0.0, 0.0];
