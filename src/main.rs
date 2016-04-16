@@ -4,7 +4,6 @@ extern crate glutin_window;
 extern crate opengl_graphics;
 extern crate find_folder;
 
-
 use piston::window::WindowSettings;
 use piston::event_loop::*;
 use piston::input::*;
@@ -12,54 +11,8 @@ use glutin_window::GlutinWindow as Window;
 use opengl_graphics::{ GlGraphics, OpenGL, Texture };
 use graphics::*;
 
-const GREEN: [f32; 4] = [0.0, 1.0, 0.0, 1.0];
-const RED:   [f32; 4] = [1.0, 0.0, 0.0, 1.0];
-const BLUE:  [f32; 4] = [0.0, 0.0, 1.0, 1.0];
-const BLACK:  [f32; 4] = [0.0, 0.0, 0.0, 1.0];
-const GREY: [f32; 4] = [0.5, 0.5, 0.5, 1.0];
-
-struct ColoredRect {
-    color: [f32; 4],
-    rectangle: graphics::types::Rectangle,
-}
-
-impl ColoredRect {
-    fn new() -> Self {
-        ColoredRect {
-            color: GREEN,
-            rectangle: [0.0, 0.0, 0.0, 0.0]
-        }
-    }
-
-    fn width_height(self, w: f64, h: f64) -> Self {
-        let mut cr = self;
-        cr.rectangle[2] = w;
-        cr.rectangle[3] = h;
-        cr
-    }
-
-    fn color(self, color: [f32; 4]) -> Self {
-        let mut cr = self;
-        cr.color = color;
-        cr
-    }
-
-    fn position(self, x: f64, y: f64) -> Self {
-        let mut cr = self;
-        cr.rectangle[0] = x;
-        cr.rectangle[1] = y;
-        cr
-    }
-
-    fn next_color(&mut self) {
-        self.color = match self.color {
-            RED   => GREEN,
-            GREEN => BLUE,
-            BLUE  => RED,
-            _     => [0.0, 0.0, 0.0, 0.0]
-        }
-    }
-}
+mod colored_rect;
+use colored_rect::*;
 
 pub struct App {
     gl: GlGraphics, // OpenGL drawing backend.
